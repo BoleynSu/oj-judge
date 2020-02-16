@@ -1,0 +1,23 @@
+FROM openjdk:latest
+RUN curl -L boleyn.su/pgp | gpg --import
+RUN yum install wget unzip -y && yum clean all
+
+ENV APPROOT=/boleyn.su/opt/boleyn.su/oj-judge/
+RUN mkdir -p $APPROOT
+WORKDIR $APPROOT
+
+ENV VERSION=1.0.0
+RUN wget https://repo1.maven.org/maven2/su/boleyn/oj/oj-judge/$VERSION/oj-judge-$VERSION-jar-with-dependencies.jar{,.asc}
+RUN gpg --verify oj-judge-$VERSION-jar-with-dependencies.jar.asc
+
+RUN useradd -r oj-judge
+USER oj-judge:oj-judge
+VOLUME /data
+
+CMD /usr/bin/bash -c '\
+    CONFIG_ENV="RUNNER_HOST RUNNER_PORT DB_HOST DB_NAME DB_USER DB_PASSWD DATA"; \
+    CONFIG=""; \
+    if [[ ! -v RUNNER_HOST ]]; then RUNNER_HOST=0.0.0.0; fi; \
+    if [[ ! -v DATA ]]; then DATA=/data; fi; \
+    for config in $CONFIG_ENV; do if [[ -v $config ]]; then CONFIG="$CONFIG -D$config=${!config}"; fi; done; \
+    java $CONFIG -jar $APPROOT/oj-judge-1.0.0-jar-with-dependencies.jar judge'
