@@ -4,7 +4,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>su.boleyn.oj</groupId>
 	<artifactId>oj-judge</artifactId>
-	<version>1.0.0</version>
+	<version>1.0.2</version>
 
 	<name>Boleyn Su's Online Judge (judge)</name>
 	<description>Yet another online judge system</description>
@@ -31,23 +31,23 @@
 	<dependencies>
 		<dependency>
 			<groupId>su.boleyn.oj</groupId>
-			<artifactId>oj-server</artifactId>
-			<version>1.0.0</version>
+			<artifactId>oj-core</artifactId>
+			<version>1.0.1</version>
 		</dependency>
 		<dependency>
 			<groupId>io.grpc</groupId>
 			<artifactId>grpc-netty-shaded</artifactId>
-			<version>1.27.0</version>
+			<version>1.27.1</version>
 		</dependency>
 		<dependency>
 			<groupId>io.grpc</groupId>
 			<artifactId>grpc-protobuf</artifactId>
-			<version>1.27.0</version>
+			<version>1.27.1</version>
 		</dependency>
 		<dependency>
 			<groupId>io.grpc</groupId>
 			<artifactId>grpc-stub</artifactId>
-			<version>1.27.0</version>
+			<version>1.27.1</version>
 		</dependency>
 	</dependencies>
 	<build>
