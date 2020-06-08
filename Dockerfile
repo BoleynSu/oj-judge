@@ -1,4 +1,4 @@
-FROM openjdk:latest
+FROM openjdk
 RUN curl -L https://boleyn.su/pgp | gpg --import
 RUN yum install wget -y && yum clean all
 
@@ -6,7 +6,7 @@ ENV APPROOT=/boleyn.su/opt/boleyn.su/oj-judge/
 RUN mkdir -p $APPROOT
 WORKDIR $APPROOT
 
-ENV VERSION=1.0.2
+ENV VERSION=1.0.3
 RUN wget https://repo1.maven.org/maven2/su/boleyn/oj/oj-judge/$VERSION/oj-judge-$VERSION-jar-with-dependencies.jar{,.asc}
 RUN gpg --verify oj-judge-$VERSION-jar-with-dependencies.jar.asc
 
