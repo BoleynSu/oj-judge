@@ -1,17 +1,21 @@
+FROM maven as build
+RUN useradd builder
+WORKDIR /build
+RUN chown builder:builder /build
+USER builder
+COPY --chown=builder ./ ./
+
+RUN mvn install -Dgpg.skip -f external/oj-core/pom.xml
+RUN mvn package
+RUN mkdir -p out
+RUN mvn help:evaluate -q -Dexpression=project.version -DforceStdout > out/version
+RUN mv target/oj-judge-$(cat out/version)-jar-with-dependencies.jar out/oj-judge.jar
+
 FROM openjdk
-RUN curl -L https://boleyn.su/pgp | gpg --import
-RUN yum install wget -y && yum clean all
-
-ENV APPROOT=/boleyn.su/opt/boleyn.su/oj-judge/
-RUN mkdir -p $APPROOT
-WORKDIR $APPROOT
-
-ENV VERSION=1.0.3
-RUN wget https://repo1.maven.org/maven2/su/boleyn/oj/oj-judge/$VERSION/oj-judge-$VERSION-jar-with-dependencies.jar{,.asc}
-RUN gpg --verify oj-judge-$VERSION-jar-with-dependencies.jar.asc
+COPY --from=build /build/out /oj-judge
 
 RUN useradd -r oj-judge
-USER oj-judge:oj-judge
+USER oj-judge
 VOLUME /data
 
 ENV RUNNER_HOST localhost
@@ -22,5 +26,4 @@ ENV DB_NAME online_judge
 # ENV DB_PASSWD
 ENV DATA /data
 
-CMD /usr/bin/bash -c '\
-    java -jar $APPROOT/oj-judge-$VERSION-jar-with-dependencies.jar'
+CMD java -jar /oj-judge/oj-judge.jar

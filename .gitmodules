@@ -1,0 +1,4 @@
+[submodule "external/oj-core"]
+	path = external/oj-core
+	url = ../oj-core.git
+	branch = master
